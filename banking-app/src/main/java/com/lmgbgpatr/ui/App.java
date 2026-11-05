@@ -1,7 +1,18 @@
 package com.lmgbgpatr.ui;
 
+import static dev.tamboui.toolkit.Toolkit.panel;
+
+import com.lmgbgpatr.ui.states.AppState;
+import com.lmgbgpatr.ui.states.NotifyState;
+import com.lmgbgpatr.ui.states.UserState;
+import com.lmgbgpatr.ui.states.ViewState;
+import com.lmgbgpatr.ui.views.DashboardView;
+import com.lmgbgpatr.ui.views.EmptyView;
+import com.lmgbgpatr.ui.views.ErrorView;
 import com.lmgbgpatr.ui.views.LoginView;
-import com.lmgbgpatr.ui.views.ViewState;
+import com.lmgbgpatr.ui.views.NotifyView;
+import com.lmgbgpatr.ui.views.View;
+import com.lmgbgpatr.ui.widgets.Widget;
 
 import dev.tamboui.toolkit.app.ToolkitApp;
 import dev.tamboui.toolkit.element.Element;
@@ -17,24 +28,57 @@ import dev.tamboui.toolkit.element.Element;
 
 public class App extends ToolkitApp {
     
-    private final AppState state = new AppState();
+    public final AppState state;
+    public final Bridge bridge;
 
-    public App() {
-        state.put("app", App.class, this);
-        state.put("title", String.class, "Revature Banking App");
-        state.put("view", ViewState.class, new ViewState.Login());
-        state.put("errorMessage", String.class, "");
-        state.put("errorPending", Boolean.class, false);
+    public App(String title, AppState state, Bridge bridge) {
+        this.state = state;
+        this.bridge = bridge;
+        state.put("title", String.class, title);
+        state.put("user", UserState.class, UserState.instance());
+
+        View.setApp(this);
+        Widget.setApp(this);
+    }
+
+    public App(AppState state, Bridge bridge) {
+        this("Revature Banking App", state, bridge);
+    }
+
+    private void pollNotify() {
+        ViewState viewState;
+        NotifyState notify = state.get("notify", NotifyState.class);
+        if (notify != null) {
+            if (notify.isError()) {
+                viewState = new ViewState.Error();
+            } else {
+                viewState = new ViewState.Notify();
+            }
+            state.put("view", ViewState.class, viewState);
+        }
+    }
+
+    private void pollLoginState() {
+        ViewState viewState;
+        Boolean authorized = UserState.instance().authorized();
+        if (authorized) {
+            viewState = new ViewState.Dashboard();
+        } else {
+            viewState = new ViewState.Login();
+        }
+        state.put("view", ViewState.class, viewState);
     }
 
     private Element renderView() {
         ViewState viewState = state.get("view", ViewState.class);
 
-        if (viewState instanceof ViewState.Login) {
-            return LoginView.render(state, null);
-        }
-
-        return null;
+        return switch(viewState) {
+            case ViewState.Login login -> LoginView.render();
+            case ViewState.Dashboard dashboard -> DashboardView.render();
+            case ViewState.Notify notify -> NotifyView.render();
+            case ViewState.Error error -> ErrorView.render();
+            default -> EmptyView.render();
+        };
     }
 
     public void setFocus(String elementId) {
@@ -43,7 +87,14 @@ public class App extends ToolkitApp {
 
     @Override
     protected Element render() {
-        return renderView();
+        pollLoginState();
+        pollNotify();
+
+        return panel(state.get("title", String.class),
+            renderView()
+        )
+        .titleCenter()
+        .fill();
     }
 
     @Override
