@@ -2,6 +2,7 @@ package com.lmgbgpatr.ui;
 
 import static dev.tamboui.toolkit.Toolkit.panel;
 
+import com.lmgbgpatr.middleware.Bridge;
 import com.lmgbgpatr.ui.states.AppState;
 import com.lmgbgpatr.ui.states.NotifyState;
 import com.lmgbgpatr.ui.states.UserState;

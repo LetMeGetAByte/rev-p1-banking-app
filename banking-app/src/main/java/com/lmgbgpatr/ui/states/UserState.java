@@ -1,7 +1,7 @@
 package com.lmgbgpatr.ui.states;
 
-import com.lmgbgpatr.ui.Bridge.Credentials;
-import com.lmgbgpatr.ui.Bridge.UserLevel;
+import com.lmgbgpatr.middleware.dto.Credentials;
+import com.lmgbgpatr.middleware.dto.UserLevel;
 
 public class UserState {
 

@@ -1,4 +1,4 @@
-package com.lmgbgpatr.ui;
+package com.lmgbgpatr.middleware;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -6,43 +6,15 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.lmgbgpatr.middleware.dto.Retrieval;
+import com.lmgbgpatr.middleware.dto.RetrievalRequest;
+import com.lmgbgpatr.middleware.dto.RetrievalResult;
+import com.lmgbgpatr.middleware.dto.UserLevel;
 import com.lmgbgpatr.ui.states.AppState;
 import com.lmgbgpatr.ui.states.NotifyState;
 import com.lmgbgpatr.ui.states.UserState;
 
 public class Bridge {
-
-    public enum UserLevel { UNAUTHORIZED, CUSTOMER, EMPLOYEE;
-        public UserLevel promote() {
-            UserLevel[] values = UserLevel.values();
-            if (this.ordinal() != values.length - 1) {
-                return values[this.ordinal() + 1];
-            }
-            return this;
-        }
-    }
-
-    public enum CredentialsHashMode { USERNAME, PASSWORD }
-    
-    public record Credentials(String username, String password) {
-        
-        public int hash(CredentialsHashMode mode) {
-            return switch(mode) {
-                case CredentialsHashMode.USERNAME -> username.hashCode();
-                case CredentialsHashMode.PASSWORD -> password.hashCode();
-            };
-        }
-
-        public int hash() {
-            return this.hashCode();
-        }
-    }
-
-    public enum RetrievalRequest { ACCOUNTS, TRANSACTIONS, CUSTOMERS, LOGS }
-
-    public record Retrieval<T>(Class<T> type, Collection<T> data) {}
-
-    public record RetrievalResult<T>(Map<Integer, Retrieval<T>> results) {}
 
     @FunctionalInterface
     public interface LoginHandler extends Function<Integer, UserLevel> {}

@@ -8,7 +8,7 @@ import static dev.tamboui.toolkit.Toolkit.tabs;
 import static dev.tamboui.toolkit.Toolkit.text;
 import static dev.tamboui.toolkit.Toolkit.textInput;
 
-import com.lmgbgpatr.ui.Bridge.Credentials;
+import com.lmgbgpatr.middleware.dto.Credentials;
 import com.lmgbgpatr.ui.states.UserState;
 
 import dev.tamboui.style.Color;

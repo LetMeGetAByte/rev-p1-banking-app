@@ -7,9 +7,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.lmgbgpatr.ui.Bridge.Retrieval;
-import com.lmgbgpatr.ui.Bridge.RetrievalRequest;
-import com.lmgbgpatr.ui.Bridge.RetrievalResult;
+import com.lmgbgpatr.middleware.dto.Retrieval;
+import com.lmgbgpatr.middleware.dto.RetrievalRequest;
+import com.lmgbgpatr.middleware.dto.RetrievalResult;
 import com.lmgbgpatr.ui.widgets.Widget;
 
 import dev.tamboui.style.Color;
