@@ -30,6 +30,7 @@ public class Bridge {
     private AppState state;
     private LoginHandler loginHandler;
     private RegistrationHandler registrationHandler;
+    private TransactionHandler transactionHandler;
     private RetrievalHandler retrievalHandler;
 
     public Bridge() {}
@@ -48,6 +49,10 @@ public class Bridge {
 
     public void setRegisterHandler(RegistrationHandler registrationHandler) {
         this.registrationHandler = registrationHandler;
+    }
+
+    public void setTransactionHandler(TransactionHandler transactionHandler) {
+        this.transactionHandler = transactionHandler;
     }
 
     public void setRetrievalHandler(RetrievalHandler retrievalHandler) {
@@ -77,6 +82,10 @@ public class Bridge {
         } else {
             notify("Registration Successful", "Please login to access your account.", false);
         }
+    }
+
+    public void handleTransaction(Integer var1, Integer var2, Double var3) {
+        Integer id = transactionHandler.apply(var1, var2, var3);
     }
 
     public RetrievalResult<?> handleRetrieval(RetrievalRequest request) {
