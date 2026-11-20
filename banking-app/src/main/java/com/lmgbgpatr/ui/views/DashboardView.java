@@ -2,13 +2,14 @@ package com.lmgbgpatr.ui.views;
 
 import static dev.tamboui.toolkit.Toolkit.panel;
 
+import com.lmgbgpatr.ui.Renderable;
 import com.lmgbgpatr.ui.states.UserState;
 import com.lmgbgpatr.ui.widgets.dashboard.AccountManager;
 
 import dev.tamboui.toolkit.element.Element;
 import dev.tamboui.toolkit.event.EventResult;
 
-public class DashboardView extends View {
+public class DashboardView extends Renderable {
 
     private static final UserState user = UserState.instance();
 
@@ -20,7 +21,7 @@ public class DashboardView extends View {
         .borderless()
         .onKeyEvent(event -> {
             if (event.isCancel()) {
-                app.quit();
+                ctx.quit();
                 return EventResult.HANDLED;
             }
 

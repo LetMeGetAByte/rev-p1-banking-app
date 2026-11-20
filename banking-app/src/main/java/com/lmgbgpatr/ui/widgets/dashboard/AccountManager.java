@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import com.lmgbgpatr.middleware.dto.Retrieval;
 import com.lmgbgpatr.middleware.dto.RetrievalRequest;
 import com.lmgbgpatr.middleware.dto.RetrievalResult;
-import com.lmgbgpatr.ui.widgets.Widget;
+import com.lmgbgpatr.ui.Renderable;
 
 import dev.tamboui.style.Color;
 import dev.tamboui.toolkit.element.Element;
@@ -21,7 +21,7 @@ import dev.tamboui.toolkit.event.EventResult;
  * 
  * Customer facing element for viewing accounts
  */
-public class AccountManager extends Widget {
+public class AccountManager extends Renderable {
 
     private static List<String> accounts = retrieveAccounts();
     private static ListElement<?> accountsList = 
@@ -30,7 +30,7 @@ public class AccountManager extends Widget {
             .autoScroll();
 
     private static List<String> retrieveAccounts() {
-        RetrievalResult<?> result = app.bridge.handleRetrieval(RetrievalRequest.ACCOUNTS);
+        RetrievalResult<?> result = ctx.getBridge().handleRetrieval(RetrievalRequest.ACCOUNTS);
         Collection<? extends Retrieval<?>> retrievals = result.results().values();
         List<String> data = 
             retrievals

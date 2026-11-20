@@ -12,25 +12,14 @@ import com.lmgbgpatr.ui.views.EmptyView;
 import com.lmgbgpatr.ui.views.ErrorView;
 import com.lmgbgpatr.ui.views.LoginView;
 import com.lmgbgpatr.ui.views.NotifyView;
-import com.lmgbgpatr.ui.views.View;
-import com.lmgbgpatr.ui.widgets.Widget;
 
 import dev.tamboui.toolkit.app.ToolkitApp;
 import dev.tamboui.toolkit.element.Element;
 
-// 9. Create the Console Interface
+public class App extends ToolkitApp implements AppContext {
 
-// Create a clear console interface that allows:
-
-//     Customers to register, log in, manage accounts, perform transactions, and view transaction history.
-//     Employees to log in, look up customers and accounts, perform wire transfers, freeze or unfreeze accounts, create and view account notes, and view activity logs.
-
-// The interface should provide understandable menus, prompts, results, and error messages, and should only show options the current user is permitted to use.
-
-public class App extends ToolkitApp {
-    
-    public final AppState state;
-    public final Bridge bridge;
+    private final AppState state;
+    private final Bridge bridge;
 
     public App(String title, AppState state, Bridge bridge) {
         this.state = state;
@@ -38,12 +27,19 @@ public class App extends ToolkitApp {
         state.put("title", String.class, title);
         state.put("user", UserState.class, UserState.instance());
 
-        View.setApp(this);
-        Widget.setApp(this);
+        Renderable.setApp(this);
     }
 
     public App(AppState state, Bridge bridge) {
         this("Revature Banking App", state, bridge);
+    }
+
+    public AppState getState() {
+        return state;
+    }
+
+    public Bridge getBridge() {
+        return bridge;
     }
 
     private void pollNotify() {
@@ -82,6 +78,7 @@ public class App extends ToolkitApp {
         };
     }
 
+    // this is unused so far, will remove soon if not used
     public void setFocus(String elementId) {
         runner().focusManager().setFocus(elementId);
     }

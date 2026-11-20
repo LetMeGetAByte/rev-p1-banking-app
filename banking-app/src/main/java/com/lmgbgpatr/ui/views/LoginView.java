@@ -9,6 +9,7 @@ import static dev.tamboui.toolkit.Toolkit.text;
 import static dev.tamboui.toolkit.Toolkit.textInput;
 
 import com.lmgbgpatr.middleware.dto.Credentials;
+import com.lmgbgpatr.ui.Renderable;
 import com.lmgbgpatr.ui.states.UserState;
 
 import dev.tamboui.style.Color;
@@ -21,7 +22,7 @@ import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.widgets.input.TextInputState;
 import dev.tamboui.widgets.tabs.TabsState;
 
-public final class LoginView extends View {
+public final class LoginView extends Renderable {
 
     private static TextInputState usernameState = new TextInputState();
     private static TextInputState passwordState = new TextInputState();
@@ -38,9 +39,9 @@ public final class LoginView extends View {
         UserState user = UserState.instance();
         user.setCredentials(credentials);
         if (tabsState.selected() == 0) {
-            app.bridge.handleLogin();
+            ctx.getBridge().handleLogin();
         } else {
-            app.bridge.handleRegistration();
+            ctx.getBridge().handleRegistration();
         }
     }
 
@@ -78,7 +79,7 @@ public final class LoginView extends View {
                 .width(Math.max(bottomTextWidth, tabTitlesWidth))
                 .rounded()
                 .onConfirm(LoginView::callCredSubmissionHandler)
-                .onCancel(app::quit)
+                .onCancel(ctx::quit)
                 .onKeyEvent(event -> {
                     if (event.code() == KeyCode.F1) {
                         tabsState.select(0);
