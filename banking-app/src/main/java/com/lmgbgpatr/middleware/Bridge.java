@@ -64,7 +64,6 @@ public class Bridge {
     }
 
     public void handleLogin() {
-        UserState user = UserState.instance();
         UserLevel userLevel = loginHandler.apply(user.hash());
 
         if (userLevel.compareTo(UserLevel.CUSTOMER) < 0) {
