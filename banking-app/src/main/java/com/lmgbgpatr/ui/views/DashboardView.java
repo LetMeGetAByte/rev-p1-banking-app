@@ -22,7 +22,6 @@ public class DashboardView extends Renderable {
         .onKeyEvent(event -> {
             if (event.isCancel()) {
                 ctx.quit();
-                return EventResult.HANDLED;
             }
 
             return EventResult.UNHANDLED;

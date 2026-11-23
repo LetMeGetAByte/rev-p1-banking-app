@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.lmgbgpatr.backend.DAO;
 import com.lmgbgpatr.middleware.Bridge;
-import com.lmgbgpatr.middleware.dto.Retrieval;
 import com.lmgbgpatr.middleware.dto.RetrievalRequest;
 import com.lmgbgpatr.middleware.dto.RetrievalResult;
 import com.lmgbgpatr.middleware.dto.UserLevel;

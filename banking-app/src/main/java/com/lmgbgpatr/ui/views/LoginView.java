@@ -28,6 +28,17 @@ public final class LoginView extends Renderable {
     private static TextInputState passwordState = new TextInputState();
     private static TabsState tabsState = new TabsState();
 
+    private static final String bottomText = "[enter] submit / [esc] exit";
+    private static final Integer bottomTextWidth = (int) (CharWidth.of(bottomText) * 1.25);
+
+    private static final String[] tabTitles = {"Login", "Register"};
+    private static final Integer tabTitlesWidth = (int) ((tabTitles[0].length() + tabTitles[1].length()) * 2);
+
+    private static final Element tabBar = tabs(tabTitles)
+        .state(tabsState)
+        .highlightStyle(Style.EMPTY.bold().fg(Color.CYAN).underlined())
+        .divider(" | ");
+
     private static TextInputElement generateField(String label) {
         return textInput(label.equals("username") ? usernameState : passwordState)
             .placeholder(label)
@@ -46,51 +57,38 @@ public final class LoginView extends Renderable {
     }
 
     public static Element render() {
-        final String bottomText = "[enter] submit / [esc] exit";
-        final Integer bottomTextWidth = (int) (CharWidth.of(bottomText) * 1.25);
-
-        final String[] tabTitles = {"Login", "Register"};
-        final Integer tabTitlesWidth = (int) ((tabTitles[0].length() + tabTitles[1].length()) * 2);
-
-        final Element tabBar = tabs(tabTitles)
-            .state(tabsState)
-            .highlightStyle(Style.EMPTY.bold().fg(Color.CYAN).underlined())
-            .divider(" | ");
 
         if (tabsState.selected() == null) {
             tabsState.select(0);
         }
 
-        return column(
-                dialog(
-                    row(
-                        spacer(),
-                        tabBar,
-                        spacer()
-                    ),
-                    column(
-                        generateField("username"),
-                        generateField("password"),
-                        text(bottomText)
-                            .centered()
-                            .dim()
-                    )
+        return dialog(
+                row(
+                    spacer(),
+                    tabBar,
+                    spacer()
+                ),
+                column(
+                    generateField("username"),
+                    generateField("password"),
+                    text(bottomText)
+                        .centered()
+                        .dim()
                 )
-                .width(Math.max(bottomTextWidth, tabTitlesWidth))
-                .rounded()
-                .onConfirm(LoginView::callCredSubmissionHandler)
-                .onCancel(ctx::quit)
-                .onKeyEvent(event -> {
-                    if (event.code() == KeyCode.F1) {
-                        tabsState.select(0);
-                        return EventResult.HANDLED;
-                    } else if (event.code() == KeyCode.F2) {
-                        tabsState.select(1);
-                        return EventResult.HANDLED;
-                    }
-                    return EventResult.UNHANDLED;
-                })
             )
-            .fill();
+            .width(Math.max(bottomTextWidth, tabTitlesWidth))
+            .rounded()
+            .onConfirm(LoginView::callCredSubmissionHandler)
+            .onCancel(ctx::quit)
+            .onKeyEvent(event -> {
+                if (event.code() == KeyCode.F1) {
+                    tabsState.select(0);
+                    return EventResult.HANDLED;
+                } else if (event.code() == KeyCode.F2) {
+                    tabsState.select(1);
+                    return EventResult.HANDLED;
+                }
+                return EventResult.UNHANDLED;
+            });
     }
 }

@@ -7,10 +7,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.lmgbgpatr.middleware.dto.Retrieval;
+import com.lmgbgpatr.middleware.dto.Account;
 import com.lmgbgpatr.middleware.dto.RetrievalRequest;
 import com.lmgbgpatr.middleware.dto.RetrievalResult;
 import com.lmgbgpatr.ui.Renderable;
+import com.lmgbgpatr.ui.states.ViewState;
 
 import dev.tamboui.style.Color;
 import dev.tamboui.toolkit.element.Element;
@@ -23,35 +24,49 @@ import dev.tamboui.toolkit.event.EventResult;
  */
 public class AccountManager extends Renderable {
 
-    private static List<String> accounts = retrieveAccounts();
+    private static List<Account> accounts = retrieveAccounts();
+    private static List<String> accountsAsStrings =
+        accounts
+            .stream()
+            .map(Object::toString)
+            .collect(Collectors.toList());
+
     private static ListElement<?> accountsList = 
-        list(accounts)
+        list(accountsAsStrings)
+            .add("[+] Create Account")
             .highlightColor(Color.CYAN)
             .autoScroll();
 
-    private static List<String> retrieveAccounts() {
-        RetrievalResult<?> result = ctx.getBridge().handleRetrieval(RetrievalRequest.ACCOUNTS);
-        Collection<? extends Retrieval<?>> retrievals = result.results().values();
-        List<String> data = 
-            retrievals
-                .stream()
-                .map(Retrieval::data)
-                .flatMap(Collection::stream)
-                .map(Object::toString)
-                .collect(Collectors.toList());
+    // RetrievalRequest.ACCOUNTS will always return RetrievalResult<Account>
+    @SuppressWarnings("unchecked")
+    private static List<Account> retrieveAccounts() {
+        RetrievalResult<?> results = ctx.getBridge().handleRetrieval(RetrievalRequest.ACCOUNTS);
 
-        return data;
+        return (List<Account>) results.getAll();
+    }
+
+    private static void storeSelectedAccount() {
+        ctx.getState().put("selectedAccount", Account.class, accounts.get(accountsList.selected()));
     }
 
     public static Element render() {
         return panel("Account Manager",
             accountsList.onKeyEvent(event -> {
                 if (event.isUp()) {
-                    accountsList.selectPrevious();
-                    return EventResult.HANDLED;
+                    accountsList.selectLast(0);
                 } else if (event.isDown()) {
                     accountsList.selectNext(1);
+                } else if (event.isConfirm()) {
+                    int sel = accountsList.selected();
+                    if (sel == accounts.size()) {
+                        ctx.setView(new ViewState.CreationView());
+                    } else {
+                        storeSelectedAccount();
+                        ctx.setView(new ViewState.AccountView());
+                    }
+                    return EventResult.HANDLED;
                 }
+
                 return EventResult.UNHANDLED;
             })
         )

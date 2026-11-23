@@ -7,6 +7,8 @@ package com.lmgbgpatr.ui.states;
 public sealed interface ViewState {
     record Login() implements ViewState {}
     record Dashboard() implements ViewState {}
+    record AccountView() implements ViewState {}
+    record CreationView() implements ViewState {}
     record Empty() implements ViewState {}
     record Notify() implements ViewState {}
     record Error() implements ViewState {}
