@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.lmgbgpatr.middleware.dto.Retrieval;
 import com.lmgbgpatr.middleware.dto.RetrievalRequest;
 import com.lmgbgpatr.middleware.dto.RetrievalResult;
 import com.lmgbgpatr.middleware.dto.UserLevel;

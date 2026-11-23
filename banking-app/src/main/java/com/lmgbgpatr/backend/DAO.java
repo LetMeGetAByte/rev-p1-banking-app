@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.lmgbgpatr.middleware.dto.Account;
-import com.lmgbgpatr.middleware.dto.Retrieval;
+import com.lmgbgpatr.middleware.dto.AccountType;
 import com.lmgbgpatr.middleware.dto.RetrievalRequest;
 import com.lmgbgpatr.middleware.dto.RetrievalResult;
 import com.lmgbgpatr.middleware.dto.UserLevel;
@@ -160,17 +160,17 @@ public class DAO {
             ResultSet rs = st.executeQuery();
 
             if (RetrievalRequest.ACCOUNTS.equals(request)) {
-                List<Account> accountList = new ArrayList<>();
+                List<Account> accounts = new ArrayList<>();
                 while (rs.next()) {
                     Account account = new Account(
                         rs.getInt(1),
                         rs.getInt(2),
-                        rs.getDouble(3)
+                        AccountType.valueOf(rs.getString(3)),
+                        rs.getDouble(4)
                     );
                     logger.info("Retrieved account: " + account.toString());
-                    accountList.add(account);
+                    accounts.add(account);
                 }
-                Retrieval<Account> accounts = new Retrieval<>(Account.class, accountList);
                 result = new RetrievalResult<>(Map.of(hash, accounts));
             }
         } catch (SQLException e) {

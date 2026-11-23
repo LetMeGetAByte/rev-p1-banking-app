@@ -1,3 +1,5 @@
 package com.lmgbgpatr.middleware.dto;
 
-public record Account(int id, int orgId, int destId, double amount, OffsetDateTime timestamp) {}
+import java.time.OffsetDateTime;
+
+public record Transaction(int id, int orgId, int destId, double amount, OffsetDateTime timestamp) {}
