@@ -115,24 +115,31 @@ public class DAO {
         return UserLevel.UNAUTHORIZED;
     }
 
-    public UserLevel register(String username, int hash) {
+    public UserLevel register(String username, String firstname, String lastname, int hash) {
         logger.info("Attempting to register username: " + username + " with hash: " + hash);
         if (username == null || username.length() == 0) {
             return UserLevel.UNAUTHORIZED;
         }
-        
+        if (firstname == null || firstname.length() == 0) {
+            firstname = John;
+        }
+        if (lastname == null || lastname.length() == 0) {
+            lastname = Doe;
+        }
         try {
             if (isUser(username)) {
                 return UserLevel.UNAUTHORIZED;
             }
 
             PreparedStatement st = conn.prepareStatement(
-                "INSERT INTO users (hash, username, level) " +
-                "VALUES (?, ?, ?)"
+                "INSERT INTO users (hash, username, firstname, lastname, level) " +
+                "VALUES (?, ?, ?, ?, ?)"
             );
             st.setInt(1, hash);
             st.setString(2, username);
-            st.setInt(3, 1);
+            st.setString(3, firstname);
+            st.setString(4, lastname);
+            st.setInt(5, 1);
             st.executeUpdate();
             return UserLevel.CUSTOMER;
         } catch (SQLException e) {
@@ -180,4 +187,7 @@ public class DAO {
 
         return result;
     }
+
+    
+
 }
