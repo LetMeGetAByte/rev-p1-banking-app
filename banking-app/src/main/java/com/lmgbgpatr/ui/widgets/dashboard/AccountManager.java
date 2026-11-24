@@ -18,24 +18,13 @@ import dev.tamboui.toolkit.element.Element;
 import dev.tamboui.toolkit.elements.ListElement;
 import dev.tamboui.toolkit.event.EventResult;
 
-/**
- * 
- * Customer facing element for viewing accounts
- */
 public class AccountManager extends Renderable {
 
-    private static List<Account> accounts = retrieveAccounts();
-    private static List<String> accountsAsStrings =
-        accounts
-            .stream()
-            .map(Object::toString)
-            .collect(Collectors.toList());
-
-    private static ListElement<?> accountsList = 
-        list(accountsAsStrings)
-            .add("[+] Create Account")
-            .highlightColor(Color.CYAN)
-            .autoScroll();
+    private static List<Account> accounts;
+    private static List<String> accountsAsStrings;
+    private static ListElement<?> accountsList;
+    
+    private static boolean needsRefresh = true;
 
     // RetrievalRequest.ACCOUNTS will always return RetrievalResult<Account>
     @SuppressWarnings("unchecked")
@@ -50,24 +39,42 @@ public class AccountManager extends Renderable {
     }
 
     public static Element render() {
+
+        if (needsRefresh) {
+            accounts = retrieveAccounts();
+
+            accountsAsStrings =
+                accounts
+                    .stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
+
+            accountsList =
+                list(accountsAsStrings)
+                    .add("[+] Create Account")
+                    .highlightColor(Color.CYAN)
+                    .autoScroll();
+            
+            needsRefresh = false;
+        }
+
         return panel("Account Manager",
             accountsList.onKeyEvent(event -> {
-                if (event.isUp()) {
-                    accountsList.selectLast(0);
-                } else if (event.isDown()) {
-                    accountsList.selectNext(1);
-                } else if (event.isConfirm()) {
+                if (!ctx.peekView().equals(ViewState.Dashboard)) return EventResult.UNHANDLED;
+
+                if (event.isConfirm()) {
                     int sel = accountsList.selected();
                     if (sel == accounts.size()) {
-                        ctx.setView(new ViewState.CreationView());
+                        ctx.pushView(ViewState.Creation);
                     } else {
                         storeSelectedAccount();
-                        ctx.setView(new ViewState.AccountView());
+                        ctx.pushView(ViewState.Account);
                     }
-                    return EventResult.HANDLED;
+                } else {
+                    return EventResult.UNHANDLED;
                 }
 
-                return EventResult.UNHANDLED;
+                return EventResult.HANDLED;
             })
         )
         .fill();

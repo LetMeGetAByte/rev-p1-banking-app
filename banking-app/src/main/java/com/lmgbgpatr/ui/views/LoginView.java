@@ -11,6 +11,7 @@ import static dev.tamboui.toolkit.Toolkit.textInput;
 import com.lmgbgpatr.middleware.dto.Credentials;
 import com.lmgbgpatr.ui.Renderable;
 import com.lmgbgpatr.ui.states.UserState;
+import com.lmgbgpatr.ui.states.ViewState;
 
 import dev.tamboui.style.Color;
 import dev.tamboui.style.Style;
@@ -26,6 +27,8 @@ public final class LoginView extends Renderable {
 
     private static TextInputState usernameState = new TextInputState();
     private static TextInputState passwordState = new TextInputState();
+    private static TextInputState fnameState = new TextInputState();
+    private static TextInputState lnameState = new TextInputState();
     private static TabsState tabsState = new TabsState();
 
     private static final String bottomText = "[enter] submit / [esc] exit";
@@ -34,21 +37,35 @@ public final class LoginView extends Renderable {
     private static final String[] tabTitles = {"Login", "Register"};
     private static final Integer tabTitlesWidth = (int) ((tabTitles[0].length() + tabTitles[1].length()) * 2);
 
-    private static final Element tabBar = tabs(tabTitles)
-        .state(tabsState)
-        .highlightStyle(Style.EMPTY.bold().fg(Color.CYAN).underlined())
-        .divider(" | ");
-
     private static TextInputElement generateField(String label) {
-        return textInput(label.equals("username") ? usernameState : passwordState)
-            .placeholder(label)
-            .id(label + "-input");
+        if (label == null || label.strip().isEmpty()) {
+            label = "blank";
+        }
+        String labelID = label.strip().replaceAll("\\s+", "-") + "-input";
+        
+        TextInputState state;
+        if (label.equals("username")) {
+            state = usernameState;
+            ctx.registerID(ViewState.Login, labelID);
+        } else if (label.equals("password")) {
+            state = passwordState;
+        } else if (label.equals("first name")) {
+            state = fnameState;
+        } else {
+            state = lnameState;
+        }
+
+        return textInput(state).placeholder(label).id(labelID);
     }
 
     private static void callCredSubmissionHandler() {
-        Credentials credentials = new Credentials(usernameState.text(), passwordState.text());
-        UserState user = UserState.instance();
-        user.setCredentials(credentials);
+        Credentials credentials = new Credentials(
+            usernameState.text(),
+            passwordState.text(),
+            fnameState.text(),
+            lnameState.text()
+        );
+        UserState.instance().setCredentials(credentials);
         if (tabsState.selected() == 0) {
             ctx.getBridge().handleLogin();
         } else {
@@ -65,30 +82,49 @@ public final class LoginView extends Renderable {
         return dialog(
                 row(
                     spacer(),
-                    tabBar,
+                    tabs(tabTitles)
+                        .state(tabsState)
+                        .highlightStyle(Style.EMPTY.bold().fg(Color.CYAN).underlined())
+                        .divider(" | "),
                     spacer()
                 ),
-                column(
-                    generateField("username"),
-                    generateField("password"),
-                    text(bottomText)
-                        .centered()
-                        .dim()
-                )
+                switch (tabsState.selected()) {
+                    case 1 -> column(
+                        generateField("username"),
+                        generateField("password"),
+                        generateField("first name"),
+                        generateField("last name"),
+                        text(bottomText)
+                            .centered()
+                            .dim()
+                        );
+                    default -> column(
+                        generateField("username"),
+                        generateField("password"),
+                        text(bottomText)
+                            .centered()
+                            .dim()
+                        );
+                }
             )
             .width(Math.max(bottomTextWidth, tabTitlesWidth))
             .rounded()
-            .onConfirm(LoginView::callCredSubmissionHandler)
-            .onCancel(ctx::quit)
             .onKeyEvent(event -> {
+                if (!ctx.peekView().equals(ViewState.Login)) return EventResult.UNHANDLED;
+                
                 if (event.code() == KeyCode.F1) {
                     tabsState.select(0);
-                    return EventResult.HANDLED;
                 } else if (event.code() == KeyCode.F2) {
                     tabsState.select(1);
-                    return EventResult.HANDLED;
+                } else if (event.isConfirm()) {
+                    callCredSubmissionHandler();
+                } else if (event.isCancel()) {
+                    ctx.quit();
+                } else {
+                    return EventResult.UNHANDLED;
                 }
-                return EventResult.UNHANDLED;
+
+                return EventResult.HANDLED;
             });
     }
 }

@@ -1,6 +1,9 @@
 package com.lmgbgpatr.ui;
 
 import static dev.tamboui.toolkit.Toolkit.panel;
+import static dev.tamboui.toolkit.Toolkit.stack;
+
+import java.util.Iterator;
 
 import com.lmgbgpatr.middleware.Bridge;
 import com.lmgbgpatr.ui.states.AppState;
@@ -19,7 +22,8 @@ import dev.tamboui.toolkit.app.ToolkitApp;
 import dev.tamboui.toolkit.element.Element;
 
 public class App extends ToolkitApp implements AppContext {
-
+    
+    private ViewStack viewStack;
     private final AppState state;
     private final Bridge bridge;
 
@@ -28,7 +32,6 @@ public class App extends ToolkitApp implements AppContext {
         this.bridge = bridge;
         state.put("title", String.class, title);
         state.put("user", UserState.class, UserState.instance());
-        state.put("cnt", Integer.class, 0);
 
         Renderable.setApp(this);
     }
@@ -45,71 +48,72 @@ public class App extends ToolkitApp implements AppContext {
         return bridge;
     }
 
-    public void setView(ViewState vs) {
-        state.put("prevView", ViewState.class, getView());
-        state.put("view", ViewState.class, vs);
+    public void registerID(ViewState state, String id) {
+        viewStack.registerID(state, id);
     }
 
-    public ViewState getView() {
-        return state.get("view", ViewState.class);
+    public ViewState peekView() {
+        return viewStack.peek();
     }
 
-    public void prevView() {
-        setView(state.get("prevView", ViewState.class));
+    public void pushView(ViewState state) {
+        viewStack.push(state);
     }
 
-    public int cnt() {
-        return state.get("cnt", Integer.class);
+    public void popView() {
+        viewStack.pop();
+    }
+
+    public void clearView() {
+        viewStack.clear();
     }
 
     private void pollNotify() {
-        ViewState viewState;
+        ViewState top = peekView();
         NotifyState notify = state.get("notify", NotifyState.class);
+
         if (notify != null) {
-            if (notify.isError()) {
-                viewState = new ViewState.Error();
-            } else {
-                viewState = new ViewState.Notify();
+            ViewState target = notify.isError() ? ViewState.Error : ViewState.Notify;
+            if (top != target && (top == ViewState.Notify || top == ViewState.Error)) {
+                popView();
             }
-            setView(viewState);
+            pushView(target);
+        } else if (top == ViewState.Notify || top == ViewState.Error) {
+            popView();
         }
     }
 
     private void pollLoginState() {
-        Boolean authorized = UserState.instance().authorized();
-        if (authorized && getView().equals(new ViewState.Login())) {
-            setView(new ViewState.Dashboard());
-        } else if (!authorized) {
-            setView(new ViewState.Login());
+        boolean authorized = Boolean.TRUE.equals(UserState.instance().authorized());
+        ViewState top = peekView();
+
+        if (authorized) {
+            if (top == null || top == ViewState.Login) {
+                if (top == ViewState.Login) {
+                    popView();
+                }
+                pushView(ViewState.Dashboard);
+            }
+        } else if (!viewStack.isRendered(ViewState.Login)) {
+            viewStack.clear();
+            pushView(ViewState.Login);
         }
-    }
-
-    private Element renderView() {
-        ViewState viewState = getView();
-
-        return switch(viewState) {
-            case ViewState.Login login -> LoginView.render();
-            case ViewState.Dashboard dashboard -> DashboardView.render();
-            case ViewState.AccountView account -> AccountView.render();
-            case ViewState.CreationView account -> CreationView.render();
-            case ViewState.Notify notify -> NotifyView.render();
-            case ViewState.Error error -> ErrorView.render();
-            default -> EmptyView.render();
-        };
-    }
-
-    // this is unused so far, will remove soon if not used
-    public void setFocus(String elementId) {
-        runner().focusManager().setFocus(elementId);
     }
 
     @Override
     protected Element render() {
+        if (viewStack == null) {
+            viewStack = new ViewStack(runner());
+        }
+
         pollLoginState();
         pollNotify();
 
-        return panel(state.get("title", String.class),
-            renderView()
+        return panel(
+            state.get("title", String.class),
+            stack(
+                viewStack.elementsToArray()
+            ).fill()
         )
         .titleCenter()
         .fill();

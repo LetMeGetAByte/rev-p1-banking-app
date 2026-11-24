@@ -1,6 +1,6 @@
 package com.lmgbgpatr.middleware.dto;
 
-public record Credentials(String username, String password) {
+public record Credentials(String username, String password, String fname, String lname) {
     public int hash(CredentialsHashMode mode) {
         return switch(mode) {
             case CredentialsHashMode.USERNAME -> username.hashCode();

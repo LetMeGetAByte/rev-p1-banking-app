@@ -166,7 +166,8 @@ public class DAO {
                         rs.getInt(1),
                         rs.getInt(2),
                         AccountType.valueOf(rs.getString(3)),
-                        rs.getDouble(4)
+                        rs.getBoolean(4),
+                        rs.getDouble(5)
                     );
                     logger.info("Retrieved account: " + account.toString());
                     accounts.add(account);

@@ -22,49 +22,52 @@ import dev.tamboui.widgets.tabs.TabsState;
 
 public class AccountView extends Renderable {
 
-    private static Account account = ctx.getState().get("selectedAccount", Account.class);
+    private static Account account;
 
     private static final ListElement<?> options =
         list()
+            .add("Deposit")
+            .add("Withdraw")
             .add("Transfer")
+            .add("Close Account")
             .add("Back")
             .highlightColor(Color.CYAN)
             .autoScroll();
 
     public static Element render() {
+        account = ctx.getState().get("selectedAccount", Account.class);
+
         return dialog(
-            "Account Viewer",
+            "Account",
             table()
                 .rows(
-                    Row.from("No:", String.valueOf(account.id())),
-                    Row.from("Balance:", String.valueOf(account.balance()))
+                    Row.from("No:   ", String.valueOf(account.id())),
+                    Row.from("Balance:  ", String.valueOf(account.balance())),
+                    Row.from("Standing:   ", "IMPL ME!")
                 ),
 
             options
                 .onKeyEvent(event -> {
-                    if (event.isUp()) {
-                        options.selectLast(0);
-                    } else if (event.isUp()) {
-                        options.selectNext(1);
-                    } else if (event.isConfirm()) {
+                    if (!ctx.peekView().equals(ViewState.Account)) return EventResult.UNHANDLED;
+
+                    if (event.isConfirm()) {
                         int sel = options.selected();
                         switch (sel) {
-                            case 0: ctx.setView(new ViewState.Empty()); break;
-                            default: ctx.prevView();
+                            case 0: ctx.pushView(ViewState.Deposit); break;
+                            case 1: ctx.pushView(ViewState.Withdraw); break;
+                            case 2: ctx.pushView(ViewState.Transfer); break;
+                            case 3: ctx.pushView(ViewState.Transfer); break;
+                            default: ctx.popView();
                         }
-
-                        return EventResult.HANDLED;
+                    } else {
+                        return EventResult.UNHANDLED;
                     }
 
-                    return EventResult.UNHANDLED;
+                    return EventResult.HANDLED;
                 })
         )
-        .onKeyEvent(event -> {
-            if (event.isCancel()) {
-                ctx.setView(new ViewState.Dashboard());
-            }
-
-            return EventResult.UNHANDLED;
-        });
+        .id("account-view")
+        .focusable()
+        .onCancel(ctx::popView);
     }
 }

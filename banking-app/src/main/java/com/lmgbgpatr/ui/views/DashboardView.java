@@ -1,10 +1,13 @@
 package com.lmgbgpatr.ui.views;
 
 import static dev.tamboui.toolkit.Toolkit.panel;
+import static dev.tamboui.toolkit.Toolkit.row;
 
 import com.lmgbgpatr.ui.Renderable;
 import com.lmgbgpatr.ui.states.UserState;
+import com.lmgbgpatr.ui.states.ViewState;
 import com.lmgbgpatr.ui.widgets.dashboard.AccountManager;
+import com.lmgbgpatr.ui.widgets.dashboard.ProfileManager;
 
 import dev.tamboui.toolkit.element.Element;
 import dev.tamboui.toolkit.event.EventResult;
@@ -15,12 +18,15 @@ public class DashboardView extends Renderable {
 
     public static Element render() {
         return panel(
-            AccountManager.render()
+            row(
+                AccountManager.render(),
+                ProfileManager.render()
+            ).fill()
         )
         .fill()
         .borderless()
         .onKeyEvent(event -> {
-            if (event.isCancel()) {
+            if (event.isCancel() && ctx.peekView().equals(ViewState.Dashboard)) {
                 ctx.quit();
             }
 

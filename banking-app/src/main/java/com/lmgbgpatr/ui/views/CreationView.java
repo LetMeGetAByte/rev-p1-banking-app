@@ -52,16 +52,19 @@ public class CreationView extends Renderable {
             .width(Math.max(bottomTextWidth, tabTitlesWidth))
             .rounded()
             .onConfirm(null)
-            .onCancel(() -> ctx.prevView())
+            .onCancel(ctx::popView)
             .onKeyEvent(event -> {
+                if (!ctx.peekView().equals(ViewState.Creation)) return EventResult.UNHANDLED;
+
                 if (event.code() == KeyCode.F1) {
                     tabsState.select(0);
-                    return EventResult.HANDLED;
                 } else if (event.code() == KeyCode.F2) {
                     tabsState.select(1);
-                    return EventResult.HANDLED;
+                } else {
+                    return EventResult.UNHANDLED;
                 }
-                return EventResult.UNHANDLED;
+
+                return EventResult.HANDLED;
             });
     }
 }

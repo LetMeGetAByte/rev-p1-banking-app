@@ -34,6 +34,14 @@ public class UserState {
         return credentials.password();
     }
 
+    public String fname() {
+        return credentials.fname();
+    }
+
+    public String lname() {
+        return credentials.lname();
+    }
+
     public Integer hash() {
         return credentials.hash();
     }

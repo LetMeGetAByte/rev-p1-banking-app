@@ -8,9 +8,10 @@ public interface AppContext {
 
     AppState getState();
     Bridge getBridge();
-    void setView(ViewState vs);
-    ViewState getView();
-    void prevView();
-    int cnt();
+    void registerID(ViewState state, String id);
+    ViewState peekView();
+    void pushView(ViewState state);
+    void popView();
+    void clearView();
     void quit();
 }

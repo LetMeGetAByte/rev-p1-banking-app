@@ -32,6 +32,8 @@ public class NotifyView extends Renderable {
         return dialog(notify.title(),
             text(notify.message()).centered()
         )
+        .id("notify-view")
+        .focusable()
         .fg(style.fgColor())
         .borderType(style.borderType())
         .borderColor(style.borderColor())
