@@ -8,9 +8,9 @@ import static dev.tamboui.toolkit.Toolkit.tabs;
 import static dev.tamboui.toolkit.Toolkit.text;
 import static dev.tamboui.toolkit.Toolkit.textInput;
 
-import com.lmgbgpatr.middleware.dto.Credentials;
+import com.lmgbgpatr.dto.Credentials;
+import com.lmgbgpatr.service.UserState;
 import com.lmgbgpatr.ui.Renderable;
-import com.lmgbgpatr.ui.states.UserState;
 import com.lmgbgpatr.ui.states.ViewState;
 
 import dev.tamboui.style.Color;

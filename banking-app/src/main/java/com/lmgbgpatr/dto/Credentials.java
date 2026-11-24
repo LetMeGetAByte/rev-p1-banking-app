@@ -1,4 +1,4 @@
-package com.lmgbgpatr.middleware.dto;
+package com.lmgbgpatr.dto;
 
 import java.util.Objects;
 

@@ -5,10 +5,10 @@ import static dev.tamboui.toolkit.Toolkit.stack;
 
 import java.util.Iterator;
 
-import com.lmgbgpatr.middleware.Bridge;
+import com.lmgbgpatr.service.Bridge;
+import com.lmgbgpatr.service.UserState;
 import com.lmgbgpatr.ui.states.AppState;
 import com.lmgbgpatr.ui.states.NotifyState;
-import com.lmgbgpatr.ui.states.UserState;
 import com.lmgbgpatr.ui.states.ViewState;
 import com.lmgbgpatr.ui.views.AccountView;
 import com.lmgbgpatr.ui.views.CreationView;

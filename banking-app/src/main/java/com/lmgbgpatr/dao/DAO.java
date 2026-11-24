@@ -1,4 +1,4 @@
-package com.lmgbgpatr.backend;
+package com.lmgbgpatr.dao;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -14,11 +14,11 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import com.lmgbgpatr.middleware.dto.Account;
-import com.lmgbgpatr.middleware.dto.AccountType;
-import com.lmgbgpatr.middleware.dto.RetrievalRequest;
-import com.lmgbgpatr.middleware.dto.RetrievalResult;
-import com.lmgbgpatr.middleware.dto.UserLevel;
+import com.lmgbgpatr.dto.AccountType;
+import com.lmgbgpatr.dto.RetrievalRequest;
+import com.lmgbgpatr.dto.RetrievalResult;
+import com.lmgbgpatr.dto.UserLevel;
+import com.lmgbgpatr.model.Account;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

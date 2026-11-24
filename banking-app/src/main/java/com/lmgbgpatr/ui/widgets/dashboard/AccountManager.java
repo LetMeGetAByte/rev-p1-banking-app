@@ -7,9 +7,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.lmgbgpatr.middleware.dto.Account;
-import com.lmgbgpatr.middleware.dto.RetrievalRequest;
-import com.lmgbgpatr.middleware.dto.RetrievalResult;
+import com.lmgbgpatr.dto.RetrievalRequest;
+import com.lmgbgpatr.dto.RetrievalResult;
+import com.lmgbgpatr.model.Account;
 import com.lmgbgpatr.ui.Renderable;
 import com.lmgbgpatr.ui.states.ViewState;
 

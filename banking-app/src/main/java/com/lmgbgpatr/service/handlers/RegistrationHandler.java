@@ -1,6 +1,6 @@
-package com.lmgbgpatr.middleware.handlers;
+package com.lmgbgpatr.service.handlers;
 
-import com.lmgbgpatr.middleware.dto.UserLevel;
+import com.lmgbgpatr.dto.UserLevel;
 
 public interface RegistrationHandler {
     UserLevel apply(String username, String firstName, String lastName, int hash);

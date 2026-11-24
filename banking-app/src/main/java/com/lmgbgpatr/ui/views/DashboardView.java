@@ -3,8 +3,8 @@ package com.lmgbgpatr.ui.views;
 import static dev.tamboui.toolkit.Toolkit.panel;
 import static dev.tamboui.toolkit.Toolkit.row;
 
+import com.lmgbgpatr.service.UserState;
 import com.lmgbgpatr.ui.Renderable;
-import com.lmgbgpatr.ui.states.UserState;
 import com.lmgbgpatr.ui.states.ViewState;
 import com.lmgbgpatr.ui.widgets.dashboard.AccountManager;
 import com.lmgbgpatr.ui.widgets.dashboard.ProfileManager;

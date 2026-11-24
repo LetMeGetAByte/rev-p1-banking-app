@@ -1,4 +1,4 @@
-package com.lmgbgpatr.middleware;
+package com.lmgbgpatr.service;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -6,14 +6,13 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.lmgbgpatr.middleware.dto.RetrievalRequest;
-import com.lmgbgpatr.middleware.dto.RetrievalResult;
-import com.lmgbgpatr.middleware.dto.UserLevel;
-import com.lmgbgpatr.middleware.handlers.RegistrationHandler;
-import com.lmgbgpatr.middleware.handlers.TransactionHandler;
+import com.lmgbgpatr.dto.RetrievalRequest;
+import com.lmgbgpatr.dto.RetrievalResult;
+import com.lmgbgpatr.dto.UserLevel;
+import com.lmgbgpatr.service.handlers.RegistrationHandler;
+import com.lmgbgpatr.service.handlers.TransactionHandler;
 import com.lmgbgpatr.ui.states.AppState;
 import com.lmgbgpatr.ui.states.NotifyState;
-import com.lmgbgpatr.ui.states.UserState;
 
 public class Bridge {
 

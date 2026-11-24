@@ -1,4 +1,4 @@
-package com.lmgbgpatr.middleware.dto;
+package com.lmgbgpatr.model;
 
 import java.time.OffsetDateTime;
 

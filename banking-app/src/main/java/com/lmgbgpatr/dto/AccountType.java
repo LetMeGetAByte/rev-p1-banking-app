@@ -1,3 +1,3 @@
-package com.lmgbgpatr.middleware.dto;
+package com.lmgbgpatr.dto;
 
 public enum AccountType { CHECKING, SAVING }

@@ -1,6 +1,6 @@
 package com.lmgbgpatr.ui;
 
-import com.lmgbgpatr.middleware.Bridge;
+import com.lmgbgpatr.service.Bridge;
 import com.lmgbgpatr.ui.states.AppState;
 import com.lmgbgpatr.ui.states.ViewState;
 

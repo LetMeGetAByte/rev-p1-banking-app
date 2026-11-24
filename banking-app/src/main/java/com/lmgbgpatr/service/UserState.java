@@ -1,7 +1,7 @@
-package com.lmgbgpatr.ui.states;
+package com.lmgbgpatr.service;
 
-import com.lmgbgpatr.middleware.dto.Credentials;
-import com.lmgbgpatr.middleware.dto.UserLevel;
+import com.lmgbgpatr.dto.Credentials;
+import com.lmgbgpatr.dto.UserLevel;
 
 public class UserState {
 

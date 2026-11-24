@@ -7,7 +7,7 @@ import static dev.tamboui.toolkit.Toolkit.table;
 import static dev.tamboui.toolkit.Toolkit.tabs;
 import static dev.tamboui.toolkit.Toolkit.text;
 
-import com.lmgbgpatr.middleware.dto.Account;
+import com.lmgbgpatr.model.Account;
 import com.lmgbgpatr.ui.Renderable;
 import com.lmgbgpatr.ui.states.ViewState;
 
