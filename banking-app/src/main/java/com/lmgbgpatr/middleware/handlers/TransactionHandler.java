@@ -1,4 +1,4 @@
-package com.lmgbgpatr.middleware;
+package com.lmgbgpatr.middleware.handlers;
 
 import java.util.Objects;
 import java.util.function.Function;

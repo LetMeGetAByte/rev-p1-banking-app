@@ -9,6 +9,8 @@ import java.util.function.Function;
 import com.lmgbgpatr.middleware.dto.RetrievalRequest;
 import com.lmgbgpatr.middleware.dto.RetrievalResult;
 import com.lmgbgpatr.middleware.dto.UserLevel;
+import com.lmgbgpatr.middleware.handlers.RegistrationHandler;
+import com.lmgbgpatr.middleware.handlers.TransactionHandler;
 import com.lmgbgpatr.ui.states.AppState;
 import com.lmgbgpatr.ui.states.NotifyState;
 import com.lmgbgpatr.ui.states.UserState;
@@ -17,9 +19,6 @@ public class Bridge {
 
     @FunctionalInterface
     public interface LoginHandler extends Function<Integer, UserLevel> {}
-
-    @FunctionalInterface
-    public interface RegistrationHandler extends BiFunction<String, Integer, UserLevel> {}
 
     @FunctionalInterface
     public interface RetrievalHandler extends BiFunction<Integer, RetrievalRequest, RetrievalResult<?>> {}
@@ -73,7 +72,7 @@ public class Bridge {
     }
 
     public void handleRegistration() {
-        UserLevel userLevel = registrationHandler.apply(user.username(), user.hash());
+        UserLevel userLevel = registrationHandler.apply(user.username(), user.fname(), user.lname(), user.hash());
 
         if (userLevel.compareTo(UserLevel.CUSTOMER) < 0) {
             notify("Registration Failed", "An unknown error occured.", false);

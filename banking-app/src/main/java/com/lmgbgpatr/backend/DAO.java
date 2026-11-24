@@ -115,17 +115,21 @@ public class DAO {
         return UserLevel.UNAUTHORIZED;
     }
 
-    public UserLevel register(String username, String firstname, String lastname, int hash) {
+    public UserLevel register(String username, String firstName, String lastName, int hash) {
         logger.info("Attempting to register username: " + username + " with hash: " + hash);
+
         if (username == null || username.length() == 0) {
             return UserLevel.UNAUTHORIZED;
         }
-        if (firstname == null || firstname.length() == 0) {
-            firstname = "John";
+
+        if (firstName == null || firstName.length() == 0) {
+            firstName = "John";
         }
-        if (lastname == null || lastname.length() == 0) {
-            lastname = "Doe";
+
+        if (lastName == null || lastName.length() == 0) {
+            lastName = "Doe";
         }
+        
         try {
             if (isUser(username)) {
                 return UserLevel.UNAUTHORIZED;
@@ -137,8 +141,8 @@ public class DAO {
             );
             st.setInt(1, hash);
             st.setString(2, username);
-            st.setString(3, firstname);
-            st.setString(4, lastname);
+            st.setString(3, firstName);
+            st.setString(4, lastName);
             st.setInt(5, 1);
             st.executeUpdate();
             return UserLevel.CUSTOMER;
@@ -188,41 +192,35 @@ public class DAO {
         return result;
     }
 
-    public int createAccount(int hash, AccountType passedAccount) {
-        logger.info("Attempting to create account of type: " + passedAccount + " with hash: " + hash);
+    public int createAccount(int hash, AccountType type) {
+        logger.info("Attempting to create account of type: " + type + " with hash: " + hash);
         
-        RetrievalResult<?> firstRes = request(hash, RetrievalRequest.ACCOUNTS);
+        int preAddAccCnt = request(hash, RetrievalRequest.ACCOUNTS).size();
 
         try {
-
             PreparedStatement st = conn.prepareStatement(
-                "INSERT INTO accounts (hash, passedAccount) " +
+                "INSERT INTO accounts (hash, type) " +
                 "VALUES (?, ?)"
             );
-            st.setInt(1, hash);
-            st.setString(2, passedAccount);
+            st.setInt(1, getUserIDFromHash(hash));
+            st.setString(2, type.toString());
             st.executeUpdate();
             
             PreparedStatement st2 = conn.prepareStatement(
-                "SELECT * FROM accounts ORDER BY id DESC LIMIT 1"
-
+                "SELECT id FROM accounts ORDER BY id DESC LIMIT 1"
             );
-            RetrievalResult<?> secondRes = request(hash, RetrievalRequest.ACCOUNTS);
+            ResultSet rs = st2.executeQuery();
 
-            if (rs.next() && (firstRes.size() < secondRes.size())) {
-                return rs.getint(1);
-            } else {
-                return -1;
+            int postAddAccCnt = request(hash, RetrievalRequest.ACCOUNTS).size();
+
+            if (rs.next() && preAddAccCnt < postAddAccCnt) {
+                return rs.getInt(1);
             }
-            
-
-
-
-
         } catch (SQLException e) {
             logger.severe(e.getMessage());
         }
 
+        return -1;
     }
 
 }
