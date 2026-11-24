@@ -121,10 +121,10 @@ public class DAO {
             return UserLevel.UNAUTHORIZED;
         }
         if (firstname == null || firstname.length() == 0) {
-            firstname = John;
+            firstname = "John";
         }
         if (lastname == null || lastname.length() == 0) {
-            lastname = Doe;
+            lastname = "Doe";
         }
         try {
             if (isUser(username)) {
