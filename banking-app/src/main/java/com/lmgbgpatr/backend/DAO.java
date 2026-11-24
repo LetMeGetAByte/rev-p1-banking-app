@@ -194,8 +194,6 @@ public class DAO {
 
     public int createAccount(int hash, AccountType type) {
         logger.info("Attempting to create account of type: " + type + " with hash: " + hash);
-        
-        int preAddAccCnt = request(hash, RetrievalRequest.ACCOUNTS).size();
 
         try {
             PreparedStatement st = conn.prepareStatement(
@@ -211,9 +209,7 @@ public class DAO {
             );
             ResultSet rs = st2.executeQuery();
 
-            int postAddAccCnt = request(hash, RetrievalRequest.ACCOUNTS).size();
-
-            if (rs.next() && preAddAccCnt < postAddAccCnt) {
+            if (rs.next()) {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
@@ -223,42 +219,36 @@ public class DAO {
         return -1;
     }
 
-    public int closeAccount(int hash, int id) {
+    public boolean closeAccount(int hash, int id) {
         logger.info("Attempting to close account with id: " + id + " with hash: " + hash);
 
-        
-
         try {
-            PreparedStatement simple = conn.prepareStatement(
-                "SELECT Account * " +
-                "FROM accounts WHERE (custId = ?) AND (id = ?) " +
-                "VALUES (?, ?)"
-
+            PreparedStatement matchingAccCnt = conn.prepareStatement(
+                "SELECT id, COUNT(*) " +
+                "FROM accounts WHERE custId = ? AND id = ?"
             );
-            simple.setInt(1, getUserIDFromHash(hash));
-            simple.setInt(2, id);
+            matchingAccCnt.setInt(1, getUserIDFromHash(hash));
+            matchingAccCnt.setInt(2, id);
+            ResultSet rs = matchingAccCnt.executeQuery();
+            int matchedID;
 
-            ResultSet rs = simple.executeQuery();
-
-            if (!rs.next() || rs.getInt(1) != 1) {
-                return -1;
+            if (!rs.next() || (matchedID = rs.getInt(1)) != 1) {
+                return false;
             }
 
             PreparedStatement st = conn.prepareStatement(
-                "DELETE FROM accounts WHERE (custId = ?) AND (id = ?) " +
-                "VALUES (?, ?)"
+                "DELETE FROM accounts WHERE id = ?"
             );
-            st.setInt(1, getUserIDFromHash(hash));
-            st.setInt(2, id);
+            st.setInt(1, matchedID);
             st.executeUpdate();
             
-            return 1;
+            return true;
 
         } catch (SQLException e) {
             logger.severe(e.getMessage());
         }
 
-        return -1;
+        return false;
 
 
     }
