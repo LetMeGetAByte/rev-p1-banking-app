@@ -188,6 +188,36 @@ public class DAO {
         return result;
     }
 
-    
+    public int createAccount(int hash, AccountType passedAccount) {
+        logger.info("Attempting to create account of type: " + passedAccount + " with hash: " + hash);
+        
+
+        try {
+
+            PreparedStatement st = conn.prepareStatement(
+                "INSERT INTO accounts (hash, passedAccount) " +
+                "VALUES (?, ?)"
+            );
+            st.setInt(1, hash);
+            st.setString(2, passedAccount);
+            st.executeUpdate();
+            
+            PreparedStatement st2 = conn.prepareStatement(
+                "SELECT * FROM accounts ORDER BY id DESC LIMIT 1"
+
+            );
+            if (rs.next()) {
+                return rs.getint(1);
+            } else {
+                return -1;
+            }
+            
+
+
+        } catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+
+    }
 
 }
