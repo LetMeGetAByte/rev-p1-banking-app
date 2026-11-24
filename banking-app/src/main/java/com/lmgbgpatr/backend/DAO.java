@@ -223,4 +223,44 @@ public class DAO {
         return -1;
     }
 
+    public int closeAccount(int hash, int id) {
+        logger.info("Attempting to close account with id: " + id + " with hash: " + hash);
+
+        
+
+        try {
+            PreparedStatement simple = conn.prepareStatement(
+                "SELECT Account * " +
+                "FROM accounts WHERE (custId = ?) AND (id = ?) " +
+                "VALUES (?, ?)"
+
+            );
+            simple.setInt(1, getUserIDFromHash(hash));
+            simple.setInt(2, id);
+
+            ResultSet rs = simple.executeQuery();
+
+            if (!rs.next() || rs.getInt(1) != 1) {
+                return -1;
+            }
+
+            PreparedStatement st = conn.prepareStatement(
+                "DELETE FROM accounts WHERE (custId = ?) AND (id = ?) " +
+                "VALUES (?, ?)"
+            );
+            st.setInt(1, getUserIDFromHash(hash));
+            st.setInt(2, id);
+            st.executeUpdate();
+            
+            return 1;
+
+        } catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+
+        return -1;
+
+
+    }
+
 }
