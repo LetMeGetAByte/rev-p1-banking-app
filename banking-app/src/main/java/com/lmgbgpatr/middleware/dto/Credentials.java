@@ -1,5 +1,7 @@
 package com.lmgbgpatr.middleware.dto;
 
+import java.util.Objects;
+
 public record Credentials(String username, String password, String fname, String lname) {
     public int hash(CredentialsHashMode mode) {
         return switch(mode) {
@@ -9,6 +11,6 @@ public record Credentials(String username, String password, String fname, String
     }
 
     public int hash() {
-        return this.hashCode();
+        return Objects.hash(username(), password());
     }
 }
