@@ -191,6 +191,7 @@ public class DAO {
     public int createAccount(int hash, AccountType passedAccount) {
         logger.info("Attempting to create account of type: " + passedAccount + " with hash: " + hash);
         
+        RetrievalResult<?> firstRes = request(hash, RetrievalRequest.ACCOUNTS);
 
         try {
 
@@ -206,12 +207,16 @@ public class DAO {
                 "SELECT * FROM accounts ORDER BY id DESC LIMIT 1"
 
             );
-            if (rs.next()) {
+            RetrievalResult<?> secondRes = request(hash, RetrievalRequest.ACCOUNTS);
+
+            if (rs.next() && (firstRes.size() < secondRes.size())) {
                 return rs.getint(1);
             } else {
                 return -1;
             }
             
+
+
 
 
         } catch (SQLException e) {
