@@ -22,6 +22,7 @@ import com.lmgbgpatr.model.Account;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+@Deprecated
 public class DAO {
 
     private static final Logger logger = Logger.getLogger(DAO.class.getName());
@@ -30,6 +31,7 @@ public class DAO {
     private Connection conn;
     private FileHandler fhand;
 
+    @Deprecated
     public DAO() {
         String host = dotenv.get("POSTGRES_HOST");
         String user = dotenv.get("POSTGRES_USER");
@@ -54,6 +56,7 @@ public class DAO {
         }
     }
 
+    @Deprecated
     public static String buildURL(String user, String password, String host, String db) {
         return String.format(
             "jdbc:postgresql://%s/%s?user=%s&password=%s",
@@ -64,6 +67,7 @@ public class DAO {
         );
     }
 
+    @Deprecated
     public boolean isUser(String username) {
         logger.info("Verifying user: " + username);
 
@@ -81,6 +85,7 @@ public class DAO {
         return false;
     }
 
+    @Deprecated
     public int getUserIDFromHash(int hash) {
         logger.info("Retrieving ID of user: " + hash);
 
@@ -98,6 +103,7 @@ public class DAO {
         return -1;
     }
 
+    @Deprecated
     public UserLevel login(int hash) {
         logger.info("Attempting to login as: " + hash);
 
@@ -115,6 +121,7 @@ public class DAO {
         return UserLevel.UNAUTHORIZED;
     }
 
+    @Deprecated
     public UserLevel register(String username, String firstName, String lastName, int hash) {
         logger.info("Attempting to register username: " + username + " with hash: " + hash);
 
@@ -153,6 +160,7 @@ public class DAO {
         return UserLevel.UNAUTHORIZED;
     }
 
+    @Deprecated
     public RetrievalResult<?> request(int hash, RetrievalRequest request) {
         logger.info("Attempting to retrieve " + request.toString() + " as: " + hash);
 
@@ -174,11 +182,11 @@ public class DAO {
                 List<Account> accounts = new ArrayList<>();
                 while (rs.next()) {
                     Account account = new Account(
-                        rs.getInt(1),
-                        rs.getInt(2),
-                        AccountType.valueOf(rs.getString(3)),
-                        rs.getBoolean(4),
-                        rs.getDouble(5)
+                        rs.getInt("id"),
+                        rs.getInt("custid"),
+                        AccountType.valueOf(rs.getString("type")),
+                        rs.getBoolean("isfrozen"),
+                        rs.getBigDecimal("balance")
                     );
                     logger.info("Retrieved account: " + account.toString());
                     accounts.add(account);
@@ -192,6 +200,7 @@ public class DAO {
         return result;
     }
 
+    @Deprecated
     public int createAccount(int hash, AccountType type) {
         logger.info("Attempting to create account of type: " + type + " with hash: " + hash);
 
@@ -219,6 +228,7 @@ public class DAO {
         return -1;
     }
 
+    @Deprecated
     public boolean closeAccount(int hash, int id) {
         logger.info("Attempting to close account with id: " + id + " with hash: " + hash);
 

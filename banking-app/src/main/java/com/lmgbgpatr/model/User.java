@@ -1,3 +1,5 @@
 package com.lmgbgpatr.model;
 
-public record User(int id, int hash, String username, String fname, String lname, int level) {}
+import com.lmgbgpatr.dto.UserLevel;
+
+public record User(int id, String username, String password, String fname, String lname, UserLevel level) {}
